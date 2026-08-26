@@ -1,0 +1,19 @@
+{
+  "name": "cashchat-mvp",
+  "version": "1.0.0",
+  "description": "WhatsApp Conversational Cashflow & Ledger Bot MVP",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "dependencies": {
+    "@google/genai": "^2.19.0",
+    "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "form-data": "^4.0.0",
+    "mongoose": "^8.4.1"
+  }
+}
