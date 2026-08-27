@@ -15,5 +15,8 @@
     "express": "^4.19.2",
     "form-data": "^4.0.0",
     "mongoose": "^8.4.1"
+  },
+  "devDependencies": {
+    "localtunnel": "^2.0.2"
   }
 }
