@@ -159,3 +159,75 @@ export const queryDebt = async (userId) => {
     throw error;
   }
 };
+
+/**
+ * Gets recent transactions for a user.
+ * @param {string} userId - The user's Mongoose ObjectId.
+ * @param {number} [limit=15] - Maximum number of transactions to retrieve.
+ * @returns {Promise<Array>} List of transactions sorted newest first.
+ */
+export const getRecentTransactions = async (userId, limit = 15) => {
+  try {
+    return await Transaction.find({ userId: new mongoose.Types.ObjectId(userId) })
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .lean();
+  } catch (error) {
+    console.error('Error fetching recent transactions:', error);
+    throw error;
+  }
+};
+
+/**
+ * Gets list of all debt records for a user.
+ * @param {string} userId - The user's Mongoose ObjectId.
+ * @returns {Promise<Array>} List of debts sorted newest first.
+ */
+export const getDebtsList = async (userId) => {
+  try {
+    return await Debt.find({ userId: new mongoose.Types.ObjectId(userId) })
+      .sort({ createdAt: -1 })
+      .lean();
+  } catch (error) {
+    console.error('Error fetching debt list:', error);
+    throw error;
+  }
+};
+
+/**
+ * Marks a specific debt as settled.
+ * @param {string} debtId - The Debt Mongoose ObjectId.
+ * @returns {Promise<object>} The updated debt document.
+ */
+export const settleDebt = async (debtId) => {
+  try {
+    return await Debt.findByIdAndUpdate(
+      debtId,
+      { status: 'settled' },
+      { new: true }
+    );
+  } catch (error) {
+    console.error('Error settling debt:', error);
+    throw error;
+  }
+};
+
+/**
+ * Resets/clears transaction and debt history for a given user (useful for demo/testing).
+ * @param {string} userId - The user's Mongoose ObjectId.
+ */
+export const resetUserData = async (userId) => {
+  try {
+    const objectId = new mongoose.Types.ObjectId(userId);
+    await Promise.all([
+      Transaction.deleteMany({ userId: objectId }),
+      Debt.deleteMany({ userId: objectId })
+    ]);
+    console.log(`[Ledger] Successfully reset ledger data for user: ${userId}`);
+    return { success: true, message: 'Ledger data reset successfully.' };
+  } catch (error) {
+    console.error('Error resetting user data:', error);
+    throw error;
+  }
+};
+

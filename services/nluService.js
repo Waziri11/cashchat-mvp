@@ -17,7 +17,7 @@ const ai = new GoogleGenAI({ apiKey });
  * @returns {Promise<object>} The parsed JSON data matching the user's intent.
  */
 export const parseIntent = async (text) => {
-  const model = process.env.GEMINI_MODEL || 'gemini-2.5-flash';
+  const model = process.env.GEMINI_MODEL || 'gemini-3.6-flash';
 
   const systemInstruction = `
     You are the NLU parser engine for CashChat, a conversational cashflow and ledger bot.

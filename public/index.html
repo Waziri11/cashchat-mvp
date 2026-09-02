@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CashChat - Conversational Cashflow & Ledger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- LEFT / MAIN: CHAT SECTION -->
+    <main class="chat-section">
+      <!-- Chat Header -->
+      <header class="chat-header">
+        <div class="bot-info">
+          <div class="avatar-container">
+            <div class="bot-avatar">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="14" x="2" y="5" rx="2"/>
+                <line x1="2" x2="22" y1="10" y2="10"/>
+              </svg>
+            </div>
+            <span class="status-indicator online"></span>
+          </div>
+          <div class="bot-details">
+            <div class="bot-name-row">
+              <h1 class="bot-name">CashChat AI</h1>
+              <span class="badge-tag">MVP Bot</span>
+            </div>
+            <p class="bot-status" id="botStatusText">Conversational Cashflow & Ledger Assistant</p>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <div class="user-pill-container" title="Current Test User ID">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+              <circle cx="12" cy="7" r="4"/>
+            </svg>
+            <input type="text" id="userIdInput" value="demo_merchant_01" title="Click to change active User ID" />
+          </div>
+
+          <button class="btn-icon" id="toggleLedgerBtn" title="Toggle Live Ledger Dashboard">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/>
+              <path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/>
+              <path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/>
+            </svg>
+            <span class="btn-label">Ledger</span>
+          </button>
+
+          <button class="btn-icon btn-danger" id="resetBtn" title="Clear history & reset ledger data">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 6h18"/>
+              <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/>
+              <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat Messages Scrollable Area -->
+      <div class="chat-messages" id="chatMessages">
+        <!-- Initial Welcome Banner -->
+        <div class="welcome-card">
+          <div class="welcome-icon">💬</div>
+          <h2>Welcome to CashChat!</h2>
+          <p>
+            Track your daily cashflow, sales, expenses, and customer debts simply by typing or speaking naturally.
+          </p>
+          <div class="guide-grid">
+            <div class="guide-item">
+              <span class="guide-emoji">💵</span>
+              <div>
+                <strong>Record Income</strong>
+                <span>"Sold 3 dresses for $90"</span>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-emoji">💸</span>
+              <div>
+                <strong>Record Expense</strong>
+                <span>"Paid $40 for electricity"</span>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-emoji">👤</span>
+              <div>
+                <strong>Track Debts</strong>
+                <span>"Sarah owes me $55 for shoes"</span>
+              </div>
+            </div>
+            <div class="guide-item">
+              <span class="guide-emoji">📊</span>
+              <div>
+                <strong>Check Balance</strong>
+                <span>"What's my balance today?"</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Suggestion Chips -->
+      <div class="suggestions-container">
+        <span class="suggestions-label">Try asking:</span>
+        <div class="chips-scroll">
+          <button class="chip" data-text="Sold 4 pairs of jeans for $120">💵 Sold 4 pairs of jeans for $120</button>
+          <button class="chip" data-text="Paid shop rent $250">💸 Paid shop rent $250</button>
+          <button class="chip" data-text="Michael owes me $80 for tailoring">👤 Michael owes me $80</button>
+          <button class="chip" data-text="What is my balance today?">📊 Today's Balance</button>
+          <button class="chip" data-text="Who owes me money?">📌 Customer Debts</button>
+          <button class="chip" data-text="Paid $15 for lunch and transport">🍔 Paid $15 for lunch</button>
+        </div>
+      </div>
+
+      <!-- Chat Input Bar -->
+      <footer class="chat-input-bar">
+        <!-- Voice Recording State Banner (hidden by default) -->
+        <div class="voice-recording-banner" id="voiceBanner" style="display: none;">
+          <div class="recording-pulse"></div>
+          <span id="voiceStatus">Listening... Speak now</span>
+          <button type="button" class="btn-cancel-voice" id="cancelVoiceBtn">Cancel</button>
+        </div>
+
+        <form class="input-form" id="chatForm">
+          <button type="button" class="btn-voice" id="voiceRecordBtn" title="Speak message (Speech to Text)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+              <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+              <line x1="12" x2="12" y1="19" y2="22"/>
+            </svg>
+          </button>
+
+          <textarea
+            id="messageInput"
+            rows="1"
+            placeholder="Type a message (e.g. 'Sold 2 items for $50' or 'Show balance')..."
+            autocomplete="off"
+          ></textarea>
+
+          <button type="submit" class="btn-send" id="sendBtn" title="Send Message">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" x2="11" y1="2" y2="13"/>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+            </svg>
+          </button>
+        </form>
+      </footer>
+    </main>
+
+    <!-- RIGHT: LIVE LEDGER DASHBOARD SIDEBAR -->
+    <aside class="ledger-sidebar" id="ledgerSidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-title">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v16a2 2 0 0 1-2 2Zm0 0a2 2 0 0 1-2-2v-9c0-1.1.9-2 2-2h2"/>
+            <path d="M18 14h-8"/>
+            <path d="M15 18h-5"/>
+            <path d="M10 6h8v4h-8V6Z"/>
+          </svg>
+          <h2>Live Ledger Dashboard</h2>
+        </div>
+        <button class="btn-close-sidebar" id="closeSidebarBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Balance Summary Card -->
+        <section class="stat-card balance-card">
+          <div class="stat-card-header">
+            <span class="stat-label">TODAY'S NET BALANCE</span>
+            <span class="live-dot" title="Auto-syncing"></span>
+          </div>
+          <div class="net-amount" id="netBalanceDisplay">$0.00</div>
+          
+          <div class="flow-pills">
+            <div class="flow-pill flow-in">
+              <span class="flow-icon">↓</span>
+              <div>
+                <span class="flow-title">Cash In</span>
+                <span class="flow-value" id="cashInDisplay">$0.00</span>
+              </div>
+            </div>
+            <div class="flow-pill flow-out">
+              <span class="flow-icon">↑</span>
+              <div>
+                <span class="flow-title">Cash Out</span>
+                <span class="flow-value" id="cashOutDisplay">$0.00</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Customer Debts Section -->
+        <section class="ledger-section">
+          <div class="section-title-row">
+            <h3>Customer Debts</h3>
+            <span class="count-badge" id="debtCountBadge">0</span>
+          </div>
+          <div class="debts-list" id="debtsList">
+            <div class="empty-state">No outstanding customer debts.</div>
+          </div>
+        </section>
+
+        <!-- Recent Transactions Section -->
+        <section class="ledger-section">
+          <div class="section-title-row">
+            <h3>Recent Transactions</h3>
+            <span class="count-badge" id="transCountBadge">0</span>
+          </div>
+          <div class="transactions-list" id="transactionsList">
+            <div class="empty-state">No transactions recorded yet today.</div>
+          </div>
+        </section>
+      </div>
+    </aside>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
